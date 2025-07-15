@@ -21,3 +21,36 @@
 .p-toast.p-toast-top-center {
     top: 100px;
 }
+.dark-card {
+  background-color: #1e1e1e !important;
+  color: #ddd !important;
+}
+
+.dark-card input,
+.dark-card .p-inputtext,
+.dark-card .p-calendar,
+.dark-card .p-inputnumber {
+  background-color: #2e2e2e !important;
+  color: #ddd !important;
+  border-color: #555 !important;
+}
+
+.dark-card .p-button {
+  border-color: #555 !important;
+  color: #ddd !important;
+}
+
+.dark-card .p-panel {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+}
+
+.dark-card .p-table {
+  background-color: #252525 !important;
+  color: #ddd !important;
+}
+
+.dark-card .p-table thead {
+  background-color: #333 !important;
+  color: #ddd !important;
+}

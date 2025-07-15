@@ -35,5 +35,7 @@ namespace LightNap.Core.Data.Entities
         /// The refresh tokens associated with the user.
         /// </summary>
         public ICollection<RefreshToken>? RefreshTokens { get; set; }
+
+        public ICollection<Financas>? Financas { get; set; }
     }
 }

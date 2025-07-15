@@ -1,9 +1,9 @@
-<api-response [apiResponse]="notifications$" errorMessage="Error loading notifications" loadingMessage="Loading notifications...">
+<api-response [apiResponse]="notifications$" errorMessage="Erro ao carregar notificações" loadingMessage="Carregando notificações...">
   <ng-template #success let-notifications>
-    <p-panel header="Notification Center">
+    <p-panel header="Centro de Notificações">
       <div class="flex justify-end">
         @if (notifications.unreadCount > 0) {
-          <p-button icon="pi pi-folder-open" label="Mark all as read" (onClick)="markAllAsRead()" />
+          <p-button icon="pi pi-folder-open" label="Marcar tudo como lido" (onClick)="markAllAsRead()" />
         }
       </div>
 
@@ -26,7 +26,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td>You have no notifications.</td>
+            <td>Você não tem notificações.</td>
           </tr>
         </ng-template>
       </p-table>

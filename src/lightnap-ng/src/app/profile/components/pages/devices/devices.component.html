@@ -1,13 +1,13 @@
-<api-response [apiResponse]="devices$" errorMessage="Error loading devices" loadingMessage="Loading devices...">
+<api-response [apiResponse]="devices$" errorMessage="Erro ao carregar os dispositivos" loadingMessage="Carregando dispositivos...">
   <ng-template #success let-devices>
-    <p-panel header="Manage Your Devices">
+    <p-panel header="Gerenciar Dispositivos">
       <p-table [value]="devices">
         <ng-template pTemplate="header">
           <tr>
             <th><i class="pi pi-trash"></i></th>
-            <th>Last Seen</th>
-            <th>Details</th>
-            <th>IP Address</th>
+            <th>Ultima Entrada</th>
+            <th>Detalhes</th>
+            <th>Endereço IP</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-device>
@@ -23,7 +23,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="100%">There are no logged in devices.</td>
+            <td colspan="100%">Você não tem dispositivos conectados.</td>
           </tr>
         </ng-template>
       </p-table>

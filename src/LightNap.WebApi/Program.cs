@@ -1,5 +1,7 @@
 using LightNap.Core.Configuration;
 using LightNap.Core.Data;
+using LightNap.Core.Financas_.Interfaces;
+using LightNap.Core.Financas_.Services;
 using LightNap.WebApi.Configuration;
 using LightNap.WebApi.Extensions;
 using LightNap.WebApi.Middleware;
@@ -13,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 builder.Services.Configure<Dictionary<string, List<SeededUserConfiguration>>>(builder.Configuration.GetSection("SeededUsers"));
+builder.Services.AddScoped<IFinancasService, FinancasService>();
 
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions((options) =>

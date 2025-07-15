@@ -4,6 +4,7 @@ using LightNap.Core.Data.Entities;
 using LightNap.Core.Profile.Dto.Response;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace LightNap.Core.Data
 {
@@ -21,6 +22,7 @@ namespace LightNap.Core.Data
         /// Refresh tokens in the DB.
         /// </summary>
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+        public DbSet<Financas> Financas { get; set; } = null!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
@@ -60,6 +62,19 @@ namespace LightNap.Core.Data
             builder.Entity<ApplicationUser>()
                 .Property(u => u.BrowserSettings)
                 .Metadata.SetValueComparer(new BrowserSettingsValueComparer());
+
+            builder.Entity<Financas>()
+                .Property(f => f.Valor)
+                .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Financas>()
+                .HasOne(f => f.Usuario)
+                .WithMany(u => u.Financas)
+                .HasForeignKey(f => f.ApplicationUserId)
+                .IsRequired();
+            builder.Entity<Financas>()
+                .Property(f => f.Tipo)
+                .HasConversion<string>();
         }
 
         /// <inheritdoc />

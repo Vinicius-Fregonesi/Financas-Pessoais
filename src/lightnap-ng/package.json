@@ -21,6 +21,8 @@
         "@angular/router": "^19.2.9",
         "@auth0/angular-jwt": "^5.2.0",
         "@primeng/themes": "^19.1.2",
+        "chart.js": "^4.5.0",
+        "primeflex": "^4.0.0",
         "primeicons": "^7.0.0",
         "primeng": "^19.1.2",
         "rxjs": "~7.8.2",

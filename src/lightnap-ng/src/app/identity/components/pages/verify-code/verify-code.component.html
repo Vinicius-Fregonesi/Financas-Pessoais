@@ -1,6 +1,6 @@
 <identity-card>
-  <span title>Two-Factor Verification</span>
-  <span subtitle>Please enter your security code to continue.</span>
+  <span title>Verificação de dois fatores</span>
+  <span subtitle>Insira o código de dois fatores para continuar</span>
 
   <div class="w-72">
     <div class="flex flex-col">
@@ -12,17 +12,17 @@
 
           <div class="flex gap-1">
             <p-checkbox inputId="rememberMe" formControlName="rememberMe" [binary]="true" />
-            <label for="rememberMe">Remember Me</label>
+            <label for="rememberMe">Lembrar-me</label>
           </div>
 
           <error-list [errors]="errors" />
         </div>
 
-        <p-button type="submit" label="Verify" styleClass="w-full" [disabled]="!form.valid" pRipple (onClick)="onVerifyClicked()" />
+        <p-button type="submit" label="Verificar" styleClass="w-full" [disabled]="!form.valid" pRipple (onClick)="onVerifyClicked()" />
       </form>
 
       <div class="mt-6 flex flex-wrap gap-4">
-        <a [routerLink]="'login' | route" class="ml-auto">Return to login</a>
+        <a [routerLink]="'login' | route" class="ml-auto">Voltar ao Login</a>
       </div>
     </div>
   </div>

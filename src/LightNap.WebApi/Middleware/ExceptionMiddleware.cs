@@ -37,24 +37,35 @@ namespace LightNap.WebApi.Middleware
             }
             catch (UserFriendlyApiException ex)
             {
+                // Log error if inner exception exists
                 if (ex.InnerException is not null)
                 {
                     logger.LogError(ex, "User-friendly exception in Web API: {message}", ex.Message);
                 }
 
-                await ExceptionMiddleware.WriteErrorAsync(context,
-                    new ApiResponseDto<string>()
-                    {
-                        ErrorMessages = ex.Errors,
-                        Type = ApiResponseType.Error
-                    });
+                context.Response.Clear();
+
+                // Aqui definimos 404 Not Found para UserFriendlyApiException
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.ContentType = "application/json";
+
+                var response = new ApiResponseDto<string>()
+                {
+                    ErrorMessages = ex.Errors ?? new[] { ex.Message },
+                    Type = ApiResponseType.Error
+                };
+
+                var json = JsonSerializer.Serialize(response, _jsonSerializerOptions);
+                await context.Response.WriteAsync(json);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Unexpected error in Web API: {message}", ex.Message);
 
-                // To simplify client-side development, we convert all remaining errors to easily digestible ApiResponseDtos.
-                // We use string as the type because it doesn't matter since Result is going to be null anyway.
+                context.Response.Clear();
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.ContentType = "application/json";
+
                 ApiResponseDto<string> error;
 
                 if (environment.IsDevelopment())
@@ -64,7 +75,7 @@ namespace LightNap.WebApi.Middleware
                         error = new ApiResponseDto<string>()
                         {
                             Type = ApiResponseType.UnexpectedError,
-                            ErrorMessages = [ex.Message]
+                            ErrorMessages = new[] { ex.Message }
                         };
                     }
                     else
@@ -72,7 +83,7 @@ namespace LightNap.WebApi.Middleware
                         error = new ApiResponseDto<string>()
                         {
                             Type = ApiResponseType.UnexpectedError,
-                            ErrorMessages = [ex.Message, ex.StackTrace]
+                            ErrorMessages = new[] { ex.Message, ex.StackTrace }
                         };
                     }
                 }
@@ -81,26 +92,13 @@ namespace LightNap.WebApi.Middleware
                     error = new ApiResponseDto<string>()
                     {
                         Type = ApiResponseType.UnexpectedError,
-                        ErrorMessages = ["Internal Server Error"]
+                        ErrorMessages = new[] { "Internal Server Error" }
                     };
-
                 }
 
-                await ExceptionMiddleware.WriteErrorAsync(context, error);
+                var json = JsonSerializer.Serialize(error, _jsonSerializerOptions);
+                await context.Response.WriteAsync(json);
             }
-        }
-
-        /// <summary>
-        /// Writes the error response as JSON.
-        /// </summary>
-        /// <param name="context">The HTTP context.</param>
-        /// <param name="error">The error response to write.</param>
-        /// <returns>A task that represents the completion of the write operation.</returns>
-        private static async Task WriteErrorAsync(HttpContext context, ApiResponseDto<string> error)
-        {
-            context.Response.ContentType = "application/json";
-            var json = JsonSerializer.Serialize(error, ExceptionMiddleware._jsonSerializerOptions);
-            await context.Response.WriteAsync(json);
         }
     }
 }

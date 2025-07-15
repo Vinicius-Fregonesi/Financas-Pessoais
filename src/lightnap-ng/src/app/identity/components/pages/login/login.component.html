@@ -1,12 +1,12 @@
 <identity-card>
-  <span title>Welcome!</span>
-  <span subtitle>Sign in to continue</span>
+  <span title>Bem Vindo de Volta!</span>
+  <span subtitle>Entre para continuar.</span>
 
   <form [formGroup]="form" (ngSubmit)="logIn()" autocomplete="off">
     <div class="w-96">
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">
-          <label for="login" class="text-xl font-medium">Email/User Name</label>
+          <label for="login" class="text-xl font-medium">Email/Nome de Usuário</label>
           <p-inputGroup>
             <input id="login" type="text" placeholder="Email/User Name" pInputText formControlName="login" />
             <p-inputgroup-addon>
@@ -16,7 +16,7 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="password" class="font-medium text-xl">Password</label>
+          <label for="password" class="font-medium text-xl">Senha</label>
           <p-password
             formControlName="password"
             styleClass="w-full"
@@ -30,18 +30,18 @@
         <div class="flex items-center justify-between">
           <div class="flex gap-2">
             <p-checkbox inputId="rememberMe" formControlName="rememberMe" [binary]="true" />
-            <label for="rememberMe">Remember Me</label>
+            <label for="rememberMe">Lembrar-me</label>
           </div>
-          <a [routerLink]="'reset-password' | route">Forgot password?</a>
+          <a [routerLink]="'reset-password' | route">Esqueceu a senha?</a>
         </div>
 
         <error-list [errors]="errors" />
       </div>
 
-      <p-button type="submit" label="Sign In" styleClass="w-full text-xl mt-2" [disabled]="!form.valid" pRipple />
+      <p-button type="submit" label="Entrar" styleClass="w-full text-xl mt-2" [disabled]="!form.valid" pRipple />
 
       <div class="mt-4">
-        <a [routerLink]="'register' | route">I need to create an account</a>
+        <a [routerLink]="'register' | route">Criar Conta</a>
       </div>
     </div>
   </form>

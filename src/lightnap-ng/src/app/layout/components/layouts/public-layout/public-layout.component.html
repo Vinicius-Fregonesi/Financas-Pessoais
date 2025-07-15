@@ -10,7 +10,7 @@
       </a>
       <div class="flex items-center justify-between gap-2">
         @if (loggedIn$ | async) {
-          <p-button pRipple label="App" [routerLink]="'user-home' | route" [rounded]="true" severity="primary" />
+          <p-button pRipple label="Finanças" [routerLink]="'user-home' | route" [rounded]="true" severity="primary" />
           <!-- Could not get (onClick) to work here. Revisit at some point. -->
           <p-button pRipple label="Logout" (click)="logOutClicked()" [rounded]="true" [text]="true" />
         } @else {

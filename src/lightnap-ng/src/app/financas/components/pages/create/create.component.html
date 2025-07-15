@@ -1,0 +1,48 @@
+<div class="flex justify-center">
+  <div class="w-full max-w-2xl">
+    <p-card styleClass="p-6 rounded-lg shadow-lg">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Criar Finança</h2>
+        <p-button [routerLink]="['..']" icon="pi pi-arrow-left" label="Voltar" />
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="createClicked()" autocomplete="off" class="flex flex-col gap-6">
+        <div>
+          <label for="descricao" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
+          <input pInputText id="descricao" formControlName="descricao" class="w-full" placeholder="Ex: Salário, Aluguel..." />
+        </div>
+
+        <div>
+          <label for="valor" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Valor</label>
+          <p-inputNumber id="valor" formControlName="valor" styleClass="w-full" mode="decimal" [minFractionDigits]="2"
+            placeholder="0,00" />
+        </div>
+
+        <div>
+          <label for="data" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Data</label>
+          <p-calendar id="data" formControlName="data" [showIcon]="true" [showTime]="true" class="w-full" />
+        </div>
+
+        <div>
+          <label for="tipo" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Tipo</label>
+          <select id="tipo" formControlName="tipo" class="p-inputtext w-full">
+            <option [ngValue]="null">Selecione</option>
+            <option *ngFor="let tipo of tiposList" [ngValue]="tipo.value">
+              {{ tipo.name }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label for="categoria" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
+          <input pInputText id="categoria" formControlName="categoria" class="w-full" placeholder="Ex: Alimentação, Transporte..." />
+        </div>
+
+
+        <error-list [errors]="errors" />
+
+        <p-button type="submit" label="Criar" icon="pi pi-check" [disabled]="!form.valid" class="w-full" />
+      </form>
+    </p-card>
+  </div>
+</div>

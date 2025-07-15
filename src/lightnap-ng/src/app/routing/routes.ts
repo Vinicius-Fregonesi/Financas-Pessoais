@@ -8,6 +8,7 @@ import { Routes as ProfileRoutes } from "../profile/components/pages/routes";
 import { Routes as PublicRoutes } from "../public/components/pages/routes";
 import { Routes as UserRoutes } from "../user/components/pages/routes";
 import { AppRoute } from "./models/app-route";
+import { Routes as FinancasRoutes } from "../financas/components/pages/routes";
 
 export const Routes: AppRoute[] = [
   { path: "", component: PublicLayoutComponent, children: PublicRoutes },
@@ -18,6 +19,7 @@ export const Routes: AppRoute[] = [
     children: [
       { path: "home", data: { breadcrumb: "Home" }, children: UserRoutes },
       { path: "profile", data: { breadcrumb: "Profile" }, children: ProfileRoutes },
+      { path: "financas",data:{breadcrumb: "Financas"}, children: FinancasRoutes }
     ],
   },
   {

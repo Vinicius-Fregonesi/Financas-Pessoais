@@ -6,27 +6,27 @@
     <div>
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-2">
-          <label for="userName" class="text-xl">User Name</label>
-          <input id="userName" type="text" placeholder="User Name" pInputText formControlName="userName" />
+          <label for="userName" class="text-xl">Nome de Usuário</label>
+          <input id="userName" type="text" placeholder="seu nome" pInputText formControlName="userName" />
         </div>
 
         <div class="flex flex-col gap-2">
           <label for="email" class="text-xl">Email</label>
-          <input id="email" type="text" placeholder="Email address" pInputText formControlName="email" />
+          <input id="email" type="text" placeholder="email@email.com" pInputText formControlName="email" />
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="password" class="text-xl">Password</label>
-          <p-password formControlName="password" styleClass="w-full" inputStyleClass="w-full" placeholder="Password" [toggleMask]="true" />
+          <label for="password" class="text-xl">Senha</label>
+          <p-password formControlName="password" styleClass="w-full" inputStyleClass="w-full" placeholder="Digite a senha" [toggleMask]="true" />
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="confirmPassword" class="text-xl">Confirm Password</label>
+          <label for="confirmPassword" class="text-xl">Confirmação de Senha</label>
           <p-password
             formControlName="confirmPassword"
             styleClass="w-full"
             inputStyleClass="w-full"
-            placeholder="Confirm Password"
+            placeholder="Digite a senha novamente"
             [toggleMask]="true"
             [feedback]="false"
           />
@@ -35,17 +35,17 @@
         <div class="flex items-center justify-between">
           <div class="flex gap-2">
             <p-checkbox inputId="rememberMe" formControlName="rememberMe" [binary]="true" />
-            <label for="rememberMe">Remember Me</label>
+            <label for="rememberMe">Lembrar-me</label>
           </div>
-          <a [routerLink]="'reset-password' | route">Forgot password?</a>
+          <a [routerLink]="'reset-password' | route">Esqueceu a senha?</a>
         </div>
 
         <div class="flex items-center gap-1">
           <p-checkbox name="checkbox" formControlName="agreedToTerms" styleClass="mr-2" [binary]="true" />
-          <label for="agreedToTerms">I agree to the</label>
-          <a [routerLink]="'terms-and-conditions' | route" target="_blank">Terms and Conditions</a>
-          <span>and</span>
-          <a [routerLink]="'privacy-policy' | route" target="_blank">Privacy Policy</a>
+          <label for="agreedToTerms">Eu aceito os </label>
+          <a [routerLink]="'terms-and-conditions' | route" target="_blank">Termos and Condições</a>
+          <span> e</span>
+          <a [routerLink]="'privacy-policy' | route" target="_blank">Política de Privacidade</a>
         </div>
 
         <error-list [errors]="errors" />
@@ -53,7 +53,7 @@
 
       <p-button type="submit" label="Register" styleClass="w-full text-xl mt-2" [disabled]="!form.valid" pRipple />
       <div class="flex flex-col mt-6">
-        <a [routerLink]="'login' | route">I already have an account</a>
+        <a [routerLink]="'login' | route">Já tenho conta</a>
       </div>
     </div>
   </form>

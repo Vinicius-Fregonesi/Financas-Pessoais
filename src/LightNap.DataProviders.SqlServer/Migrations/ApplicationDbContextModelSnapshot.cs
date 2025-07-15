@@ -17,7 +17,7 @@ namespace LightNap.DataProviders.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -130,6 +130,45 @@ namespace LightNap.DataProviders.SqlServer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("LightNap.Core.Data.Entities.Financas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Financas");
                 });
 
             modelBuilder.Entity("LightNap.Core.Data.Entities.Notification", b =>
@@ -307,6 +346,17 @@ namespace LightNap.DataProviders.SqlServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LightNap.Core.Data.Entities.Financas", b =>
+                {
+                    b.HasOne("LightNap.Core.Data.Entities.ApplicationUser", "Usuario")
+                        .WithMany("Financas")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("LightNap.Core.Data.Entities.Notification", b =>
                 {
                     b.HasOne("LightNap.Core.Data.Entities.ApplicationUser", "User")
@@ -382,6 +432,8 @@ namespace LightNap.DataProviders.SqlServer.Migrations
 
             modelBuilder.Entity("LightNap.Core.Data.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("Financas");
+
                     b.Navigation("Notifications");
 
                     b.Navigation("RefreshTokens");
