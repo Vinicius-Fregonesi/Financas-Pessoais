@@ -33,6 +33,8 @@ namespace LightNap.Core.Data.Entities
         public string Categoria { get; set; }
 
 
+        public ICollection<AnexoFinanceiro>? Anexos { get; set; }
+
         [Required]
         public string ApplicationUserId { get; set; }
 

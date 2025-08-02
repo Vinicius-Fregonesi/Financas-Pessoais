@@ -16,7 +16,7 @@ namespace LightNap.Core.Financas_.Extensions
                 Valor = dto.Valor,
                 Data = dto.Data,
                 Tipo = dto.Tipo,
-                Categoria = dto.Categoria,
+                Categoria = dto.Categoria
             };  
             return item;
         }

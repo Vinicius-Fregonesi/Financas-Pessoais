@@ -86,4 +86,7 @@
       <DependentUpon>RegistrationWelcomeTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AnexosFinanceiro\Dto\Request\" />
+  </ItemGroup>
 </Project>

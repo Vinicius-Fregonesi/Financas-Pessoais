@@ -16,5 +16,6 @@ namespace LightNap.Core.Financas_.Dto.Request
         public FinancasTipo? Tipo { get; set; }
         public string? Categoria { get; set; }
 
+
     }
 }

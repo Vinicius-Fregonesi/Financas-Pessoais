@@ -13,5 +13,6 @@ namespace LightNap.Core.Financas_.Dto.Response
         public DateTime Data { get; set; }
         public FinancasTipo? Tipo { get; set; }
         public string Categoria { get; set; }
+
     }
 }

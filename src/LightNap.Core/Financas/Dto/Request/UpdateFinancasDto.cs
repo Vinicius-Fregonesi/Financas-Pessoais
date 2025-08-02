@@ -12,5 +12,6 @@ namespace LightNap.Core.Financas_.Dto.Request
         public DateTime Data { get; set; }
         public FinancasTipo Tipo { get; set; }
         public string Categoria { get; set; }
+
     }
 }

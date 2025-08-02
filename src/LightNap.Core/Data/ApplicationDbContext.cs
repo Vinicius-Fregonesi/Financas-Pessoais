@@ -23,6 +23,7 @@ namespace LightNap.Core.Data
         /// </summary>
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
         public DbSet<Financas> Financas { get; set; } = null!;
+        public DbSet<Data.Entities.AnexoFinanceiro> AnexosFinanceiros { get; set; } = null!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
@@ -72,9 +73,16 @@ namespace LightNap.Core.Data
                 .WithMany(u => u.Financas)
                 .HasForeignKey(f => f.ApplicationUserId)
                 .IsRequired();
+
             builder.Entity<Financas>()
                 .Property(f => f.Tipo)
                 .HasConversion<string>();
+
+            builder.Entity<Data.Entities.AnexoFinanceiro>()
+                .HasOne(a => a.Financa)
+                .WithMany(f => f.Anexos)
+                .HasForeignKey(a => a.FinancasId)
+                .IsRequired();
         }
 
         /// <inheritdoc />
