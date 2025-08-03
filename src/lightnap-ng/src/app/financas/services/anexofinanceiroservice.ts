@@ -2,14 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { API_URL_ROOT } from "@core";
 import { Observable } from "rxjs";
-
-// DTO esperado para os anexos
-export interface AnexoFinanceiroDto {
-    nomeArquivo: string;
-    caminho: string;
-    tipoArquivo: string;
-    dataEnvio: string; // ou Date, dependendo do backend
-}
+import { AnexoFinanceiroDto } from "../models/response/anexofinanceiro";
 
 @Injectable({
     providedIn: "root",
@@ -32,11 +25,16 @@ export class AnexoFinanceiroService {
         });
     }
 
+
     downloadArquivo(anexo: AnexoFinanceiroDto): Observable<Blob> {
         return this.#http.get(`${this.#apiUrlRoot}DownloadAnexo`, {
             params: { caminho: anexo.caminho },
             responseType: 'blob'
         });
+    }
+
+    excluirAnexo(anexoId: number): Observable<void> {
+        return this.#http.delete<void>(`${this.#apiUrlRoot}ExcluirAnexo/${anexoId}`);
     }
 
 }

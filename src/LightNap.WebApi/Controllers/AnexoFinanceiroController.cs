@@ -51,6 +51,16 @@ namespace LightNap.WebApi.Controllers
             return File(arquivo.Stream, arquivo.ContentType, arquivo.NomeArquivo);
         }
 
+        [HttpDelete("ExcluirAnexo/{id}")]
+        public async Task<IActionResult> ExcluirAnexo(int id)
+        {
+            var sucesso = await anexoFinanceiroService.DeleteAnexoAsync(id);
+            if (!sucesso) return NotFound("Anexo não encontrado.");
+
+            return NoContent();
+        }
+
+
     }
 
 }

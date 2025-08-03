@@ -1,8 +1,10 @@
 ﻿using LightNap.Core.AnexoFinanceiro.Dto.Response;
 using LightNap.Core.AnexoFinanceiro.Interface;
 using LightNap.Core.AnexosFinanceiro.Dto.Response;
+using LightNap.Core.Api;
 using LightNap.Core.Data;
 using LightNap.Core.Data.Entities;
+using LightNap.Core.Exceptions.LightNap.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace LightNap.Core.AnexoFinanceiro.Service
@@ -18,46 +20,56 @@ namespace LightNap.Core.AnexoFinanceiro.Service
 
         public async Task<AnexoFinanceiroDto> CreateAnexoFinanceiroAsync(IFormFile arquivo, string financasId)
         {
+            if (!int.TryParse(financasId, out var idFinanca))
+                throw new UserFriendlyApiException("ID da finança inválido.");
+
+            var quantidadeAnexos = _context.AnexosFinanceiros.Count(a => a.FinancasId == idFinanca);
+            if (quantidadeAnexos >= 2)
+                throw new FileLimitExceededException("Você atingiu o limite máximo de arquivos permitidos.");
+
+            var uploadFolder = Path.Combine("wwwroot", "Uploads", financasId, "Anexos");
+            Directory.CreateDirectory(uploadFolder);
+
+            var nomeArquivo = $"{Guid.NewGuid()}_{Path.GetFileName(arquivo.FileName)}";
+            var caminhoArquivo = Path.Combine(uploadFolder, nomeArquivo);
+
             try
             {
-                string uploadFolder = Path.Combine("wwwroot", "Uploads", financasId, "Anexos");
-                if (!Directory.Exists(uploadFolder))
-                    Directory.CreateDirectory(uploadFolder);
+                using var stream = new FileStream(caminhoArquivo, FileMode.Create);
+                await arquivo.CopyToAsync(stream);
+            }
+            catch (IOException ioEx)
+            {
+                throw new UserFriendlyApiException("Erro ao salvar o arquivo no servidor.", ioEx);
+            }
 
-                string nomeArquivo = $"{Guid.NewGuid()}_{Path.GetFileName(arquivo.FileName)}";
-                string caminhoArquivo = Path.Combine(uploadFolder, nomeArquivo);
+            var anexo = new Data.Entities.AnexoFinanceiro
+            {
+                NomeArquivo = nomeArquivo,
+                Caminho = caminhoArquivo,
+                TipoArquivo = arquivo.ContentType,
+                DataEnvio = DateTime.Now,
+                FinancasId = idFinanca
+            };
 
-                using (var stream = new FileStream(caminhoArquivo, FileMode.Create))
-                {
-                    await arquivo.CopyToAsync(stream);
-                }
-
-                // Salvar no banco
-                var anexo = new Data.Entities.AnexoFinanceiro
-                {
-                    NomeArquivo = nomeArquivo,
-                    Caminho = caminhoArquivo,
-                    TipoArquivo = arquivo.ContentType,
-                    DataEnvio = DateTime.Now,
-                    FinancasId = int.Parse(financasId)
-                };
-
+            try
+            {
                 _context.AnexosFinanceiros.Add(anexo);
                 await _context.SaveChangesAsync();
-
-                // Retorna DTO
-                return new AnexoFinanceiroDto
-                {
-                    NomeArquivo = nomeArquivo,
-                    Caminho = caminhoArquivo,
-                    TipoArquivo = arquivo.ContentType,
-                    DataEnvio = anexo.DataEnvio
-                };
             }
-            catch (Exception ex)
+            catch (Exception dbEx)
             {
-                throw new InvalidOperationException("Erro ao salvar o anexo no banco de dados.", ex);
+                throw new UserFriendlyApiException("Erro ao salvar o anexo no banco de dados.", dbEx);
             }
+
+            return new AnexoFinanceiroDto
+            {
+                Id = anexo.Id,
+                NomeArquivo = nomeArquivo,
+                Caminho = caminhoArquivo,
+                TipoArquivo = arquivo.ContentType,
+                DataEnvio = anexo.DataEnvio
+            };
         }
 
         public async Task<ICollection<AnexoFinanceiroDto>> GetAnexosFinanceirosAsync(string financasId)
@@ -72,6 +84,7 @@ namespace LightNap.Core.AnexoFinanceiro.Service
 
                 var anexosDto = anexos.Select(a => new AnexoFinanceiroDto
                 {
+                    Id = a.Id,
                     NomeArquivo = a.NomeArquivo,
                     Caminho = $"/Uploads/{financasId}/Anexos/{a.NomeArquivo}",
                     TipoArquivo = a.TipoArquivo,
@@ -113,6 +126,23 @@ namespace LightNap.Core.AnexoFinanceiro.Service
                 return null;
             }
         }
+
+        public async Task<bool> DeleteAnexoAsync(int anexoId)
+        {
+            var anexo = await _context.AnexosFinanceiros.FindAsync(anexoId);
+            if (anexo == null) return false;
+
+            var caminhoCompleto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", anexo.Caminho.TrimStart('/'));
+
+            if (File.Exists(caminhoCompleto))
+                File.Delete(caminhoCompleto);
+
+            _context.AnexosFinanceiros.Remove(anexo);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
 
     }
 }

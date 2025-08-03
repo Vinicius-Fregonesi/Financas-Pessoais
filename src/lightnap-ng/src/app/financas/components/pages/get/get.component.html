@@ -37,7 +37,8 @@
             </div>
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500 dark:text-gray-300">Categoria</label>
-              <div class="text-base font-semibold text-gray-800 dark:text-gray-100">{{ financas.categoria || '---' }}</div>
+              <div class="text-base font-semibold text-gray-800 dark:text-gray-100">{{ financas.categoria || '---' }}
+              </div>
             </div>
             <div class="flex flex-col gap-1">
               <label class="text-sm text-gray-500 dark:text-gray-300">Tipo</label>
@@ -54,14 +55,20 @@
 
             <div *ngIf="anexos().length > 0; else semAnexos">
               <ul class="list-disc list-inside space-y-2">
-                <li *ngFor="let anexo of anexos()" class="text-blue-600 hover:underline">
-                  <button (click)="baixarAnexo(anexo)" class="text-blue-600 hover:underline">
-                    {{ anexo.nomeArquivo }}
+                <li *ngFor="let anexo of anexos()" class="flex items-center justify-between">
+                  <div>
+                    <button (click)="baixarAnexo(anexo)" class="text-blue-600 hover:underline">
+                      {{ anexo.nomeArquivo }}
+                    </button>
+                    <span class="text-gray-500 text-sm">
+                      ({{ anexo.tipoArquivo }}) - {{ anexo.dataEnvio | date:'dd/MM/yyyy' }}
+                    </span>
+                  </div>
+                  <button (click)="excluirAnexo(anexo)" class="text-red-500 hover:text-red-700 text-sm">
+                    Excluir
                   </button>
-                  <span class="text-gray-500 text-sm">
-                    ({{ anexo.tipoArquivo }}) - {{ anexo.dataEnvio | date:'dd/MM/yyyy' }}
-                  </span>
                 </li>
+
               </ul>
             </div>
 
@@ -98,3 +105,4 @@
     </div>
   </div>
 </p-dialog>
+<p-toast key="global"></p-toast>

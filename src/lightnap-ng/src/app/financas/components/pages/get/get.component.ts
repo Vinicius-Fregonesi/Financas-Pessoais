@@ -1,10 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component, effect, inject, input, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ApiResponseComponent } from "@core";
+import { ApiResponseComponent, ToastService } from "@core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { DialogModule } from "primeng/dialog";
+import { ToastModule } from "primeng/toast";
 import { Observable } from "rxjs";
 import { FinancaTipo } from "src/app/financas/models/request/create-financas-request";
 import { Financas } from "src/app/financas/models/response/financas";
@@ -22,12 +23,14 @@ import { AnexoFinanceiroDto } from "src/app/financas/models/response/anexofinanc
     ApiResponseComponent,
     ButtonModule,
     DialogModule,
+    ToastModule,
   ],
 })
 export class GetComponent {
   // Serviços
   #financasService = inject(FinancasService);
   #anexoService = inject(AnexoFinanceiroService);
+  #toastService = inject(ToastService);
 
   anexos = signal<AnexoFinanceiroDto[]>([]);
   readonly id = input.required<number>();
@@ -38,14 +41,12 @@ export class GetComponent {
   selectedFile = signal<File | null>(null);
 
   tipos = FinancaTipo;
-  errors: string[] = [];
 
   constructor() {
     effect(() => {
       const financaId = this.id();
       this.financas$ = this.#financasService.getFinancas(financaId);
 
-      // Carrega Anexos
       this.#anexoService.getAnexos(financaId).subscribe({
         next: (data) => this.anexos.set(data),
         error: () => this.anexos.set([]),
@@ -60,7 +61,7 @@ export class GetComponent {
       if (file.type === "application/pdf" || file.type.startsWith("image/")) {
         this.selectedFile.set(file);
       } else {
-        alert("Apenas arquivos PDF ou Imagem são permitidos.");
+        this.#toastService.warn("Apenas arquivos PDF ou Imagem são permitidos.");
         input.value = "";
         this.selectedFile.set(null);
       }
@@ -73,18 +74,18 @@ export class GetComponent {
 
     this.#anexoService.uploadArquivo(this.id(), file).subscribe({
       next: () => {
-        alert("Arquivo enviado com sucesso!");
+        this.#toastService.success("Arquivo enviado com sucesso!");
         this.showModal.set(false);
         this.selectedFile.set(null);
 
-        // Recarrega Anexos
         this.#anexoService.getAnexos(this.id()).subscribe({
           next: (data) => this.anexos.set(data),
           error: () => this.anexos.set([]),
         });
       },
-      error: () => {
-        alert("Erro ao enviar o arquivo.");
+      error: (err) => {
+        const mensagens = err?.errorMessages ?? ["Erro ao enviar o arquivo."];
+        this.#toastService.errorMessages(mensagens);
       },
     });
   }
@@ -93,16 +94,34 @@ export class GetComponent {
     this.#anexoService.downloadArquivo(anexo).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = anexo.nomeArquivo;
         link.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => {
-        alert("Erro ao baixar o arquivo.");
-      }
+      error: (err) => {
+        const mensagens = err?.errorMessages ?? ["Erro ao baixar o arquivo."];
+        this.#toastService.errorMessages(mensagens);
+      },
     });
   }
 
+  excluirAnexo(anexo: AnexoFinanceiroDto) {
+    if (!confirm(`Deseja excluir o arquivo "${anexo.nomeArquivo}"?`)) return;
+
+    this.#anexoService.excluirAnexo(anexo.id).subscribe({
+      next: () => {
+        this.#toastService.success("Arquivo excluído com sucesso!");
+        this.#anexoService.getAnexos(this.id()).subscribe({
+          next: (data) => this.anexos.set(data),
+          error: () => this.anexos.set([]),
+        });
+      },
+      error: (err) => {
+        const mensagens = err?.errorMessages ?? ["Erro ao excluir o arquivo."];
+        this.#toastService.errorMessages(mensagens);
+      },
+    });
+  }
 }

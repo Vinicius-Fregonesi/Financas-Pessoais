@@ -14,5 +14,7 @@ namespace LightNap.Core.AnexoFinanceiro.Interface
         Task<ICollection<AnexoFinanceiroDto>> GetAnexosFinanceirosAsync(string FinancasId);
         Task<AnexoFinanceiroDto> CreateAnexoFinanceiroAsync(IFormFile arquivo, string FinancasId);
         Task<ArquivoDownloadDto?> DownloadAnexoAsync(string caminho);
+        Task<bool> DeleteAnexoAsync(int anexoId);
+
     }
 }
