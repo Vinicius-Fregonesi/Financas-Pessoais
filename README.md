@@ -1,6 +1,6 @@
 # 💰 Sistema de Controle Financeiro — Baseado em LightNap
 
-Este projeto é uma aplicação Angular moderna voltada para o **controle de finanças pessoais ou empresariais**, construída sobre os princípios do [LightNap](https://github.com/SharpLogic/LightNap) — um starter kit full-stack leve que combina .NET, Angular e PrimeNG para acelerar o desenvolvimento de SPAs (Single Page Applications).
+Este projeto é uma aplicação que combina .Net com Angular moderna voltada para o **controle de finanças pessoais ou empresariais**, construída sobre os princípios do [LightNap](https://github.com/SharpLogic/LightNap) — um starter kit full-stack leve que combina .NET, Angular e PrimeNG para acelerar o desenvolvimento de SPAs (Single Page Applications).
 
 
 ## 🎯 Objetivo

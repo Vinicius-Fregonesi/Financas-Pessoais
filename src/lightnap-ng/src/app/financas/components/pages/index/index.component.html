@@ -1,89 +1,155 @@
 <p-card header="Todas as finanças" styleClass="p-4">
+
+  <!-- 🔢 Cards de Totais + Gráfico -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <!-- Cards de Totais -->
-    <!-- Card de Total -->
-    <div class="col-span-1 bg-blue-50 dark:bg-blue-900 p-4 rounded-xl shadow">
+    <!-- Total -->
+    <div class="bg-blue-50 dark:bg-blue-900 p-4 rounded-xl shadow">
       <h5 class="text-gray-600 dark:text-gray-300 text-sm">Total</h5>
-      <p class="text-xl font-bold text-blue-700 dark:text-blue-200">R$ {{ total | number:'1.2-2' }}</p>
+      <p class="text-xl font-bold text-blue-700 dark:text-blue-200">
+        R$ {{ total | number:'1.2-2' }}
+      </p>
     </div>
 
-    <!-- Card de Receitas -->
-    <div class="col-span-1 bg-green-50 dark:bg-green-900 p-4 rounded-xl shadow">
+    <!-- Receitas -->
+    <div class="bg-green-50 dark:bg-green-900 p-4 rounded-xl shadow">
       <h5 class="text-gray-600 dark:text-gray-300 text-sm">Receitas</h5>
-      <p class="text-xl font-bold text-green-700 dark:text-green-200">R$ {{ totalReceitas | number:'1.2-2' }}</p>
+      <p class="text-xl font-bold text-green-700 dark:text-green-200">
+        R$ {{ totalReceitas | number:'1.2-2' }}
+      </p>
     </div>
 
-    <!-- Card de Despesas -->
-    <div class="col-span-1 bg-red-50 dark:bg-red-900 p-4 rounded-xl shadow">
+    <!-- Despesas -->
+    <div class="bg-red-50 dark:bg-red-900 p-4 rounded-xl shadow">
       <h5 class="text-gray-600 dark:text-gray-300 text-sm">Despesas</h5>
-      <p class="text-xl font-bold text-red-700 dark:text-red-200">R$ {{ totalDespesas | number:'1.2-2' }}</p>
+      <p class="text-xl font-bold text-red-700 dark:text-red-200">
+        R$ {{ totalDespesas | number:'1.2-2' }}
+      </p>
     </div>
-
 
     <!-- Gráfico Doughnut -->
-    <div class="col-span-1 h-48">
-      <p-chart type="doughnut" [data]="chartData" [options]="chartOptions"
-        style="height: 100%; max-height: 190px;"></p-chart>
+    <div class="h-48">
+      <p-chart
+        type="doughnut"
+        [data]="chartData"
+        [options]="chartOptions"
+        style="height: 100%; max-height: 190px;"
+      ></p-chart>
     </div>
   </div>
 
+  <!-- ➕ Botão Criar -->
   <div class="w-full flex justify-start mb-6">
-    <p-button [routerLink]="['create']" severity="success" icon="pi pi-plus" label="Criar"
-      styleClass="shadow-md"></p-button>
+    <p-button
+      [routerLink]="['create']"
+      severity="success"
+      icon="pi pi-plus"
+      label="Criar"
+      styleClass="shadow-md"
+    ></p-button>
   </div>
 
+  <!-- 🔍 Painel de Filtros -->
+  <div class="mb-6">
+    <p-panel
+      header="Filtros"
+      [formGroup]="form"
+      [toggleable]="true"
+      [collapsed]="true"
+    >
+      <div class="flex flex-wrap gap-4 items-end">
+        <!-- Descrição -->
+        <div class="w-full md:w-[16rem]">
+          <label for="descricao" class="block mb-1 font-medium">Descrição</label>
+          <input pInputText id="descricao" formControlName="descricao" class="w-full" />
+        </div>
 
+        <!-- Valor -->
+        <div class="w-full md:w-[16rem]">
+          <label for="valor" class="block mb-1 font-medium">Valor</label>
+          <p-inputNumber
+            id="valor"
+            formControlName="valor"
+            styleClass="w-full"
+            mode="decimal"
+            [minFractionDigits]="2"
+          ></p-inputNumber>
+        </div>
 
-  
-  <p-panel header="Filtros" [formGroup]="form" [toggleable]="true" [collapsed]="true" styleClass="mb-6">
-    <div class="flex flex-wrap gap-4 items-end">
-      <div class="w-[16rem]">
-        <label for="descricao" class="block mb-1 font-medium">Descrição</label>
-        <input pInputText id="descricao" formControlName="descricao" class="w-full" />
-      </div>
-      <div class="w-[16rem]">
-        <label for="valor" class="block mb-1 font-medium">Valor</label>
-        <p-inputNumber id="valor" formControlName="valor" styleClass="w-full" mode="decimal"
-          [minFractionDigits]="2"></p-inputNumber>
-      </div>
-      <div class="w-[16rem]">
-        <label for="data" class="block mb-1 font-medium">Data Inicial</label>
-        <p-calendar id="datainicio" formControlName="datainicio" [showIcon]="true" dateFormat="dd/mm/yy" inputId="datainicio"
-          class="w-full"></p-calendar>
-      </div>
-      <div class="w-[16rem]">
-        <label for="datafinal" class="block mb-1 font-medium">Data Final</label>
-        <p-calendar id="datafinal" formControlName="datafinal" [showIcon]="true" dateFormat="dd/mm/yy" inputId="datafinal"
-          class="w-full"></p-calendar>
-      </div>
-      <div class="w-[16rem]">
-        <label for="tipo" class="block mb-1 font-medium">Tipo:</label>
-        <select id="tipo" formControlName="tipo" class="w-full p-inputtext">
-          <option [ngValue]="undefined">Todos</option>
-          <option *ngFor="let tipo of tipoOptions" [ngValue]="tipo">
-            {{ getTipoDescricao(tipo) }}
-          </option>
-        </select>
+        <!-- Data Inicial -->
+        <div class="w-full md:w-[16rem]">
+          <label for="datainicio" class="block mb-1 font-medium">Data Inicial</label>
+          <p-calendar
+            id="datainicio"
+            formControlName="datainicio"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            inputId="datainicio"
+            class="w-full"
+          ></p-calendar>
+        </div>
 
-      </div>
+        <!-- Data Final -->
+        <div class="w-full md:w-[16rem]">
+          <label for="datafinal" class="block mb-1 font-medium">Data Final</label>
+          <p-calendar
+            id="datafinal"
+            formControlName="datafinal"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            inputId="datafinal"
+            class="w-full"
+          ></p-calendar>
+        </div>
 
-      <div class="w-[16rem]">
-        <label for="categoria" class="block mb-1 font-medium">Categoria</label>
-        <input pInputText id="categoria" formControlName="categoria" class="w-full" />
-      </div>
-      <div>
-        <p-button label="Limpar" icon="pi pi-refresh" (click)="form.reset()" severity="secondary"
-          class="ml-auto"></p-button>
-      </div>
-    </div>
-  </p-panel>
+        <!-- Tipo -->
+        <div class="w-full md:w-[16rem]">
+          <label for="tipo" class="block mb-1 font-medium">Tipo</label>
+          <select id="tipo" formControlName="tipo" class="w-full p-inputtext">
+            <option [ngValue]="undefined">Todos</option>
+            <option *ngFor="let tipo of tipoOptions" [ngValue]="tipo">
+              {{ getTipoDescricao(tipo) }}
+            </option>
+          </select>
+        </div>
 
-  <!-- Tabela de resultados -->
-  <api-response [apiResponse]="searchResults$" errorMessage="Erro ao carregar" loadingMessage="Carregando...">
+        <!-- Categoria -->
+        <div class="w-full md:w-[16rem]">
+          <label for="categoria" class="block mb-1 font-medium">Categoria</label>
+          <input pInputText id="categoria" formControlName="categoria" class="w-full" />
+        </div>
+
+        <!-- Botão Limpar -->
+        <div>
+          <p-button
+            label="Limpar"
+            icon="pi pi-refresh"
+            (click)="form.reset()"
+            severity="secondary"
+            class="ml-auto"
+          ></p-button>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <!-- 📊 Tabela de Resultados -->
+  <api-response
+    [apiResponse]="searchResults$"
+    errorMessage="Erro ao carregar"
+    loadingMessage="Carregando..."
+  >
     <ng-template #success let-searchResults>
-      <p-table [value]="searchResults.data" [paginator]="true" [rows]="pageSize"
-        [totalRecords]="searchResults.totalCount" [lazy]="true" (onLazyLoad)="onLazyLoad($event)"
-        responsiveLayout="scroll" class="shadow-sm" [loading]="loading">
+      <p-table
+        [value]="searchResults.data"
+        [paginator]="true"
+        [rows]="pageSize"
+        [totalRecords]="searchResults.totalCount"
+        [lazy]="true"
+        (onLazyLoad)="onLazyLoad($event)"
+        responsiveLayout="scroll"
+        class="shadow-sm"
+        [loading]="loading"
+      >
         <ng-template pTemplate="header">
           <tr>
             <th></th>
@@ -98,19 +164,23 @@
         <ng-template pTemplate="body" let-financas>
           <tr>
             <td>
-              <p-button [routerLink]="[financas.id]" icon="pi pi-eye" class="p-button-text"></p-button>
+              <p-button
+                [routerLink]="[financas.id]"
+                icon="pi pi-eye"
+                class="p-button-text"
+              ></p-button>
             </td>
             <td>{{ financas.descricao }}</td>
             <td>{{ financas.valor | currency:'BRL':'symbol-narrow' }}</td>
             <td>{{ financas.data | date:'dd/MM/yyyy' }}</td>
-            <td>{{financas.tipo}}</td>
+            <td>{{ financas.tipo }}</td>
             <td>{{ financas.categoria }}</td>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="5" class="text-center italic text-gray-500">
+            <td colspan="6" class="text-center italic text-gray-500">
               Nenhuma finança encontrada.
             </td>
           </tr>
