@@ -32,4 +32,11 @@ export class AnexoFinanceiroService {
         });
     }
 
+    downloadArquivo(anexo: AnexoFinanceiroDto): Observable<Blob> {
+        return this.#http.get(`${this.#apiUrlRoot}DownloadAnexo`, {
+            params: { caminho: anexo.caminho },
+            responseType: 'blob'
+        });
+    }
+
 }

@@ -1,6 +1,8 @@
 ﻿using LightNap.Core.AnexoFinanceiro.Dto.Response;
 using LightNap.Core.AnexoFinanceiro.Interface;
+using LightNap.Core.AnexosFinanceiro.Dto.Response;
 using LightNap.Core.Data;
+using LightNap.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace LightNap.Core.AnexoFinanceiro.Service
@@ -18,7 +20,7 @@ namespace LightNap.Core.AnexoFinanceiro.Service
         {
             try
             {
-                string uploadFolder = Path.Combine("Uploads", financasId, "Anexos");
+                string uploadFolder = Path.Combine("wwwroot", "Uploads", financasId, "Anexos");
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
@@ -71,7 +73,7 @@ namespace LightNap.Core.AnexoFinanceiro.Service
                 var anexosDto = anexos.Select(a => new AnexoFinanceiroDto
                 {
                     NomeArquivo = a.NomeArquivo,
-                    Caminho = $"/Uploads/{financasId}/Anexos/{a.NomeArquivo}", // <-- URL pública correta
+                    Caminho = $"/Uploads/{financasId}/Anexos/{a.NomeArquivo}",
                     TipoArquivo = a.TipoArquivo,
                     DataEnvio = a.DataEnvio
                 }).ToList();
@@ -81,6 +83,34 @@ namespace LightNap.Core.AnexoFinanceiro.Service
             catch (Exception ex)
             {
                 throw new InvalidOperationException("Erro ao buscar anexos financeiros no banco de dados.", ex);
+            }
+        }
+
+
+        public async Task<ArquivoDownloadDto?> DownloadAnexoAsync(string caminhoRelativo)
+        {
+            try
+            {
+                // Caminho absoluto
+                var caminhoCompleto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", caminhoRelativo.TrimStart('/'));
+
+                if (!File.Exists(caminhoCompleto))
+                    return null;
+
+                var stream = new FileStream(caminhoCompleto, FileMode.Open, FileAccess.Read);
+                var contentType = MimeTypes.GetMimeType(caminhoCompleto); // Usa biblioteca ou método auxiliar
+                var nomeArquivo = Path.GetFileName(caminhoCompleto);
+
+                return new ArquivoDownloadDto
+                {
+                    Stream = stream,
+                    ContentType = contentType,
+                    NomeArquivo = nomeArquivo
+                };
+            }
+            catch
+            {
+                return null;
             }
         }
 

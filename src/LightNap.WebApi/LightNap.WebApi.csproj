@@ -25,6 +25,8 @@
     <ProjectReference Include="..\LightNap.DataProviders.SqlServer\LightNap.DataProviders.SqlServer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <None Include="wwwroot\Uploads\2009\Anexos\ab60c20a-e890-46e0-b8f0-87bb9c576bb9_Lista_de_Compras.pdf" />
+    <None Include="wwwroot\Uploads\2009\Anexos\cd4db88e-cbe5-4318-b906-3b5fcd3cae4e_Cardapio %281%29 %281%29.pdf" />
+    <None Include="wwwroot\Uploads\2009\Anexos\da27f004-e5aa-40f7-baf3-40c15ba6b780_Lista_de_Compras.pdf" />
   </ItemGroup>
 </Project>

@@ -40,6 +40,17 @@ namespace LightNap.WebApi.Controllers
 
             return Ok(anexos);
         }
+
+        [HttpGet("DownloadAnexo")]
+        public async Task<IActionResult> DownloadAnexo([FromQuery] string caminho)
+        {
+            var arquivo = await anexoFinanceiroService.DownloadAnexoAsync(caminho);
+            if (arquivo == null)
+                return NotFound("Arquivo não encontrado.");
+
+            return File(arquivo.Stream, arquivo.ContentType, arquivo.NomeArquivo);
+        }
+
     }
 
 }

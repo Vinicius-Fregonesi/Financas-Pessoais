@@ -1,4 +1,5 @@
 ﻿using LightNap.Core.AnexoFinanceiro.Dto.Response;
+using LightNap.Core.AnexosFinanceiro.Dto.Response;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace LightNap.Core.AnexoFinanceiro.Interface
     {
         Task<ICollection<AnexoFinanceiroDto>> GetAnexosFinanceirosAsync(string FinancasId);
         Task<AnexoFinanceiroDto> CreateAnexoFinanceiroAsync(IFormFile arquivo, string FinancasId);
+        Task<ArquivoDownloadDto?> DownloadAnexoAsync(string caminho);
     }
 }

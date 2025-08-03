@@ -90,12 +90,19 @@ export class GetComponent {
   }
 
   baixarAnexo(anexo: AnexoFinanceiroDto) {
-    const link = document.createElement('a');
-    link.href = anexo.caminho; // Exemplo: /Uploads/2009/Anexos/arquivo.pdf
-    link.download = anexo.nomeArquivo;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    this.#anexoService.downloadArquivo(anexo).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = anexo.nomeArquivo;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        alert("Erro ao baixar o arquivo.");
+      }
+    });
   }
+
 }
