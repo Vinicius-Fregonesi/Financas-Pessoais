@@ -1,12 +1,11 @@
 ﻿using LightNap.Core.AnexoFinanceiro.Dto.Response;
 using LightNap.Core.AnexoFinanceiro.Interface;
 using LightNap.Core.Data;
-using LightNap.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace LightNap.Core.AnexosFinanceiro.Service
+namespace LightNap.Core.AnexoFinanceiro.Service
 {
-    internal class AnexosFinanceiroService : IAnexosFinanceiroService
+    public class AnexosFinanceiroService : IAnexosFinanceiroService
     {
         private readonly ApplicationDbContext _context;
 
@@ -19,7 +18,6 @@ namespace LightNap.Core.AnexosFinanceiro.Service
         {
             try
             {
-                // Cria diretório de upload
                 string uploadFolder = Path.Combine("Uploads", financasId, "Anexos");
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
@@ -60,9 +58,31 @@ namespace LightNap.Core.AnexosFinanceiro.Service
             }
         }
 
-        public Task<ICollection<AnexoFinanceiroDto>> GetAnexosFinanceirosAsync(string FinancasId)
+        public async Task<ICollection<AnexoFinanceiroDto>> GetAnexosFinanceirosAsync(string financasId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int id = int.Parse(financasId);
+
+                var anexos = await Task.Run(() => _context.AnexosFinanceiros
+                    .Where(a => a.FinancasId == id)
+                    .ToList());
+
+                var anexosDto = anexos.Select(a => new AnexoFinanceiroDto
+                {
+                    NomeArquivo = a.NomeArquivo,
+                    Caminho = $"/Uploads/{financasId}/Anexos/{a.NomeArquivo}", // <-- URL pública correta
+                    TipoArquivo = a.TipoArquivo,
+                    DataEnvio = a.DataEnvio
+                }).ToList();
+
+                return anexosDto;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Erro ao buscar anexos financeiros no banco de dados.", ex);
+            }
         }
+
     }
 }

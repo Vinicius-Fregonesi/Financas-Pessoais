@@ -8,4 +8,5 @@ export interface Financas {
 	data: Date;
 	tipo:FinancaTipo;
 	categoria: string;
+
 }

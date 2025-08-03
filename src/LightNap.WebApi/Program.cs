@@ -1,3 +1,4 @@
+using LightNap.Core.AnexoFinanceiro.Interface;
 using LightNap.Core.Configuration;
 using LightNap.Core.Data;
 using LightNap.Core.Financas_.Interfaces;
@@ -16,15 +17,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 builder.Services.Configure<Dictionary<string, List<SeededUserConfiguration>>>(builder.Configuration.GetSection("SeededUsers"));
 builder.Services.AddScoped<IFinancasService, FinancasService>();
+builder.Services.AddScoped<IAnexosFinanceiroService, LightNap.Core.AnexoFinanceiro.Service.AnexosFinanceiroService>();
 
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions((options) =>
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -40,12 +42,15 @@ builder.Services.AddDatabaseServices(builder.Configuration)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Middleware pipeline
+
+// Ative swagger tanto no Desenvolvimento quanto em Produção (se quiser, pode condicionar depois)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LightNap API V1");
+    c.RoutePrefix = "swagger"; // URL: /swagger/index.html
+});
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
@@ -62,9 +67,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// We need the wwwroot folder so we can append the "browser" folder the Angular app deploys to. We then need to configure the app to serve the Angular deployment,
-// which includes appropriate deep links. However, if you're using a fresh clone then you won't have a wwwroot folder until you build the Angular app and WebRootPath
-// will be null. We then need to check if the folder exists before we try to use it. If it doesn't, then we don't need to bother with the configuration.
+// Servir arquivos estáticos da pasta "Uploads" para download dos anexos
+var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+if (!Directory.Exists(uploadPath))
+{
+    Directory.CreateDirectory(uploadPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadPath),
+    RequestPath = "/Uploads"
+});
+
+// Servir Angular app na pasta "wwwroot/browser"
 string wwwRootPath = app.Environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 string angularAppPath = Path.Combine(wwwRootPath, "browser");
 if (Directory.Exists(angularAppPath))
@@ -72,7 +88,7 @@ if (Directory.Exists(angularAppPath))
     var fileProvider = new PhysicalFileProvider(angularAppPath);
     app.UseDefaultFiles(new DefaultFilesOptions
     {
-        DefaultFileNames = ["index.html"],
+        DefaultFileNames = new[] { "index.html" },
         FileProvider = fileProvider
     });
     app.UseStaticFiles(new StaticFileOptions
@@ -89,12 +105,13 @@ if (Directory.Exists(angularAppPath))
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
-var logger = services.GetService<ILogger<Program>>() ?? throw new Exception($"Logging is not configured, so there may be deeper configuration issues");
+var logger = services.GetService<ILogger<Program>>() ?? throw new Exception("Logging is not configured.");
 
 try
 {
     var context = services.GetRequiredService<ApplicationDbContext>();
     var applicationSettings = services.GetRequiredService<IOptions<ApplicationSettings>>();
+
     if (applicationSettings.Value.AutomaticallyApplyEfMigrations && context.Database.IsRelational())
     {
         await context.Database.MigrateAsync();
